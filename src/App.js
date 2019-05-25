@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from "react";
+import { Route, withRouter } from "react-router-dom";
 import './App.css';
+import firebase from './firebase';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state={user: null};
+  } 
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({ user })
+    })
+  }
+  // state = {
+  //   drawerOpen: false
+  // };
+  // toggleDrawer = bool => {
+  //   this.setState({
+  //     drawerOpen: bool
+  //   });
+  // };
+
+  // changeLink(link) {
+  //   console.log("hoge");
+  //   console.log(this.props.history.location.pathname);
+  //   switch (link) {
+  //     case "Home":
+  //       this.props.history.push("/");
+  //       break;
+  //     case "Count":
+  //       this.props.history.push("/count");
+  //       break;
+  //     case "Todo":
+  //       this.props.history.push("/todo");
+  //       break;
+  //     default:
+  //       this.props.history.push("/");
+  //   }
+  // }
+  render() {
+    return (
+      <div>
+        <h2>hoge</h2>
+      </div>
+    );
+  }
 }
 
-export default App;
+export default withRouter(App);
+
