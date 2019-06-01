@@ -5,6 +5,7 @@ import firebase from './firebase';
 import Login from './container/Login';
 import MyAppBar from './components/MyAppBar';
 import Home from './container/Home';
+import SignUp from "./container/SignUp";
 
 class App extends Component {
   constructor(props) {
@@ -17,26 +18,8 @@ class App extends Component {
     };
   }
 
-  // static getDerivedStateFromProps(nextProps,prevState){
-  //   let new_link="/";
-  //   if(prevState.user!==null){
-  //     if (nextProps.history.location.pathname === "/" || nextProps.history.location.pathname === "/signup") nextProps.history.push("/home");
-  //     new_link=nextProps.history.location.pathname;
-  //   }
-  //   else if(nextProps.history.location.pathname==="/signup"){
-  //     new_link=nextProps.history.location.pathname;
-  //   }else{
-  //     if(nextProps.history.location.pathname!=="/"){
-  //       nextProps.history.push('/');
-  //     }
-  //   }
-  //   return {
-  //     link: new_link
-  //   }
-  // }
-
   async fetchUser() {
-    const user = await firebase.auth().onAuthStateChanged(user => {
+    await firebase.auth().onAuthStateChanged(user => {
       if (user)
       {
         this.setState({
@@ -44,7 +27,6 @@ class App extends Component {
           user: user,
           loading: false
         });
-        // this.props.history.push("/home");
       } else
       {
         this.setState({
@@ -52,7 +34,6 @@ class App extends Component {
           user: null,
           loading: false
         });
-        // this.props.history.push("/");
       }
       return user;
     });
@@ -62,13 +43,40 @@ class App extends Component {
     this.fetchUser();
   }
 
+  loginWithEmail = (email, pass) => {
+    firebase.auth().signInWithEmailAndPassword(email, pass).catch(function (error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+  }
+
+  createWithEmailAndPassword = (email, pass) => {
+    firebase.auth().createUserWithEmailAndPassword(email, pass)
+      .catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === 'auth/weak-password')
+        {
+          alert('The password is too weak.');
+        } else
+        {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
+  }
+
   render() {
     const { authenticated } = this.state;
     return (
       <div>
         {authenticated ? <MyAppBar /> : null}
         <Switch>
-          <Route exact path="/" render={() => !authenticated ? <Login /> : <Redirect to="/home" />} />
+          <Route exact path="/signup" render={() => !authenticated ? <SignUp createWithEmailAndPassword={this.createWithEmailAndPassword} /> : <Redirect to="/home" />} />
+          <Route exact path="/" render={() => !authenticated ? <Login loginWithEmail={this.loginWithEmail} /> : <Redirect to="/home" />} />
           <Route exact path="/home" render={() => authenticated ? <Home /> : <Redirect to="/" />} />
         </Switch>
       </div>

@@ -3,12 +3,13 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from '@material-ui/core/Typography';
 
-class Login extends Component {
+class SignUp extends Component {
     constructor(props) {
         super(props)
         this.state = {
             email: '',
-            pass: ''
+            pass: '',
+            repass: ''
         };
     }
     emailChange = e => {
@@ -22,12 +23,19 @@ class Login extends Component {
         });
     }
 
+    rePassChange = e => {
+        this.setState({
+            repass: e.target.value
+        });
+    }
+
+
     render() {
-        const { email, pass } = this.state;
+        const { email, pass, repass } = this.state;
         return (
             <div className="login">
                 <Typography variant="h5" gutterBottom>
-                    Login
+                    SignUp
                 </Typography>
                 <TextField
                     label="Email"
@@ -40,8 +48,22 @@ class Login extends Component {
                     value={this.state.pass}
                     onChange={this.passChange}
                 />
+                <TextField
+                    label="Password again"
+                    type="password"
+                    value={this.state.repass}
+                    onChange={this.rePassChange}
+                />
                 <Button
-                    onClick={()=>this.props.loginWithEmail(email,pass)}
+                    onClick={() => {
+                        if (pass === repass)
+                        {
+                            this.props.createWithEmailAndPassword(email, pass);
+                        } else
+                        {
+                            console.log("error");
+                        }
+                    }}
                 >
                     submit
                 </Button>
@@ -50,4 +72,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default SignUp;
