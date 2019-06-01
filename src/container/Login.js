@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import firebase from '../firebase';
-import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from '@material-ui/core/Typography';
@@ -29,7 +28,7 @@ class Login extends Component {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log(errorCode);
+            console.log(errorCode,errorMessage);
         });
     }
 
@@ -46,6 +45,7 @@ class Login extends Component {
                 />
                 <TextField
                     label="Password"
+                    type="password"
                     value={this.state.pass}
                     onChange={this.passChange}
                 />
