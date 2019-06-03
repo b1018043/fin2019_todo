@@ -6,6 +6,8 @@ import Login from './container/Login';
 import MyAppBar from './components/MyAppBar';
 import Home from './container/Home';
 import SignUp from "./container/SignUp";
+import Todo from "./container/Todo";
+import SideBar from "./components/SideBar";
 
 class App extends Component {
   constructor(props) {
@@ -14,7 +16,8 @@ class App extends Component {
       user: null,
       loading: true,
       authenticated: false,
-      link: this.props.history.location.pathname
+      drawerOpen: false,
+      uid: ""
     };
   }
 
@@ -25,14 +28,16 @@ class App extends Component {
         this.setState({
           authenticated: true,
           user: user,
-          loading: false
+          loading: false,
+          uid:user.uid
         });
       } else
       {
         this.setState({
           authenticated: false,
           user: null,
-          loading: false
+          loading: false,
+          uid: user.uid
         });
       }
       return user;
@@ -69,14 +74,23 @@ class App extends Component {
       });
   }
 
+  drawerChange = (bool) => {
+    this.setState({
+      drawerOpen: bool,
+    });
+  }
+
   render() {
     const { authenticated } = this.state;
+    console.log("test", authenticated);
     return (
       <div>
-        {authenticated ? <MyAppBar /> : null}
+        {authenticated ? <MyAppBar drawerChange={(bool) => this.drawerChange(bool)} /> : null}
+        <SideBar drawerOpen={this.state.drawerOpen} onClose={() => this.drawerChange(false)} />
         <Switch>
           <Route exact path="/signup" render={() => !authenticated ? <SignUp createWithEmailAndPassword={this.createWithEmailAndPassword} /> : <Redirect to="/home" />} />
           <Route exact path="/" render={() => !authenticated ? <Login loginWithEmail={this.loginWithEmail} /> : <Redirect to="/home" />} />
+          <Route exact path="/todo" render={() => authenticated ? <Todo /> : <Redirect to="/" />} />
           <Route exact path="/home" render={() => authenticated ? <Home /> : <Redirect to="/" />} />
         </Switch>
       </div>

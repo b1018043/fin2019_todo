@@ -32,6 +32,7 @@ function MyAppBar(props) {
             className={classes.menuButton}
             color="inherit"
             aria-label="Menu"
+            onClick={()=>props.drawerChange(true)}
           >
             <MenuIcon />
           </IconButton>
