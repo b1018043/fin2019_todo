@@ -10,8 +10,8 @@ import Typography from "@material-ui/core/Typography";
 
 const TodoList = (props) => {
     return (
-        <div>
-            <h2>{props.text}</h2>
+        <div className="todoBox">
+            <h2 className="center">{props.text}</h2>
             {props.todos.map((todo, id) => {
                 return (
                     <Card key={id}>
@@ -24,9 +24,9 @@ const TodoList = (props) => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button value={todo.id} index={todo.complete} onClick={()=>props.toggleTodo(todo.id,todo.complete)}>Next</Button>
+                            {!props.notNext?<Button value={todo.id} index={todo.complete} onClick={() => props.toggleTodo(todo.id, todo.complete)}>Next</Button>:null}
                             <Button value={todo.id} onClick={
-                                ()=>props.deleteTodo(todo.id)
+                                () => props.deleteTodo(todo.id)
                             }>delete</Button>
                         </CardActions>
                     </Card>

@@ -1,0 +1,12 @@
+.todoList{
+  display: flex;
+}
+
+.todoBox{
+    width :25%;
+}
+
+.center{
+  text-align: center;
+  display: inline-block;
+}

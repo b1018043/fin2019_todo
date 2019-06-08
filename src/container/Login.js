@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from '@material-ui/core/Typography';
+import "./Login.css";
+import { Link } from "react-router-dom";
 
 class Login extends Component {
     constructor(props) {
@@ -41,10 +43,13 @@ class Login extends Component {
                     onChange={this.passChange}
                 />
                 <Button
+                    variant="contained" color="primary"
                     onClick={()=>this.props.loginWithEmail(email,pass)}
                 >
                     submit
                 </Button>
+                <br/>
+                <Link to="/signup">signup</Link>
             </div>
         );
     }

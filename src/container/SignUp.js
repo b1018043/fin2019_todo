@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from '@material-ui/core/Typography';
+import "./Login.css";
+import { Link } from "react-router-dom";
 
 class SignUp extends Component {
     constructor(props) {
@@ -55,6 +57,7 @@ class SignUp extends Component {
                     onChange={this.rePassChange}
                 />
                 <Button
+                    variant="contained" color="primary"
                     onClick={() => {
                         if (pass === repass)
                         {
@@ -67,6 +70,8 @@ class SignUp extends Component {
                 >
                     submit
                 </Button>
+                <br />
+                <Link to="/">login</Link>
             </div>
         );
     }

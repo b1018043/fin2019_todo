@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TodoList from "../components/TodoList";
 import InputTodo from "../components/InputTodo";
 import firebase from "../firebase";
+import "./Todo.css";
 
 class Todo extends Component {
     constructor(props) {
@@ -55,6 +56,9 @@ class Todo extends Component {
             userId: this.props.uid
         }).then(() => {
             this.getTasksData();
+            this.setState({
+                text:""
+            });
         });
     }
 
@@ -107,10 +111,10 @@ class Todo extends Component {
         return (
             <div className="todo">
                 <div className="todoList">
-                    <TodoList text="Plan" todos={plan} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
-                    <TodoList text="Ready" todos={ready} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
-                    <TodoList text="Doing" todos={doing} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
-                    <TodoList text="Done" todos={done} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Plan" notNext={false} todos={plan} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Ready" notNext={false} todos={ready} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Doing" notNext={false} todos={doing} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Done" notNext={true} todos={done} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
                 </div>
                 <InputTodo addTodo={this.addTodo} changeText={this.changeText} text={this.state.text} />
             </div>
