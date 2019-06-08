@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TodoList from "../components/TodoList";
 import InputTodo from "../components/InputTodo";
+import firebase from "../firebase";
 
 class Todo extends Component {
     constructor(props) {
@@ -11,13 +12,49 @@ class Todo extends Component {
         };
     }
 
+    componentDidMount() {
+        this.getTasksData();
+    }
+
+    getTasksData() {
+        let db = firebase.firestore();
+        console.log(this.props.uid);
+        db.collection('todos')
+            .where('userId', '==', this.props.uid)
+            .get()
+            .then(snapShot => {
+                let tasks = [];
+                snapShot.forEach(doc => {
+                    console.log(doc);
+                    tasks.push({
+                        id: doc.id,
+                        task: doc.data().task,
+                        complete: doc.data().complete
+                    });
+                });
+                console.log(tasks);
+                this.setState({
+                    todos: tasks
+                });
+            });
+    }
+
     addTodo = () => {
+        let db = firebase.firestore();
+        const { text } = this.state;
         const tmp = this.state.todos;
         this.setState({
             todos: [...tmp, {
-                task: this.state.text,
-                complete: false
+                task: text,
+                complete: 0
             }]
+        });
+        db.collection(`todos`).add({
+            task: text,
+            complete: 0,
+            userId: this.props.uid
+        }).then(() => {
+            this.getTasksData();
         });
     }
 
@@ -28,30 +65,53 @@ class Todo extends Component {
     }
 
     deleteTodo = (id) => {
-        this.setState({
-            todos: this.state.todos.filter((item, index) => {
-                console.log(index);
-                return index !== id;
-            })
-        });
+        let db = firebase.firestore();
+        console.log(id);
+        db.collection('todos')
+            .doc(id)
+            .delete()
+            .then(() => {
+                this.getTasksData()
+            });
     }
 
-    completeTodo = (id) => {
-        this.setState({
-            todos: this.state.todos.map((item, index) => {
-                if (index === id)
-                {
-                    item.complete = !item.complete;
-                }
-                return item;
+    toggleTodo = (id, com) => {
+        let db = firebase.firestore();
+        console.log(id);
+        db.collection('todos')
+            .doc(id)
+            .update({
+                complete: com + 1
             })
-        });
+            .then(() => {
+                this.getTasksData()
+            }).catch(function (error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
     }
 
     render() {
+        const plan = this.state.todos.filter(function (item) {
+            return item.complete === 0;
+        });
+        const ready = this.state.todos.filter(function (item) {
+            return item.complete === 1;
+        })
+        const doing = this.state.todos.filter(function (item) {
+            return item.complete === 2;
+        })
+        const done = this.state.todos.filter(function (item) {
+            return item.complete === 3;
+        })
         return (
             <div className="todo">
-                <TodoList todos={this.state.todos} deleteTodo={(id) => this.deleteTodo(id)} completeTodo={(id) => this.completeTodo(id)} />
+                <div className="todoList">
+                    <TodoList text="Plan" todos={plan} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Ready" todos={ready} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Doing" todos={doing} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                    <TodoList text="Done" todos={done} deleteTodo={this.deleteTodo} toggleTodo={this.toggleTodo} />
+                </div>
                 <InputTodo addTodo={this.addTodo} changeText={this.changeText} text={this.state.text} />
             </div>
         );

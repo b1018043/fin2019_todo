@@ -39,12 +39,7 @@ function MyAppBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             hoge
           </Typography>
-          <Button onClick={()=>{firebase.auth().signOut().then(function() {
-  // Sign-out successful.
-}).catch(function(error) {
-  // An error happened.
-  console.log(error);
-});}}>Logout</Button>
+          <Button onClick={props.logout}>Logout</Button>
         </Toolbar>
       </AppBar>
     </div>

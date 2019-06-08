@@ -29,7 +29,7 @@ class App extends Component {
           authenticated: true,
           user: user,
           loading: false,
-          uid:user.uid
+          uid: user.uid
         });
       } else
       {
@@ -37,10 +37,19 @@ class App extends Component {
           authenticated: false,
           user: null,
           loading: false,
-          uid: user.uid
+          uid: null
         });
       }
       return user;
+    });
+  }
+
+  logout = () => {
+    firebase.auth().signOut().then(function () {
+      // Sign-out successful.
+    }).catch(function (error) {
+      // An error happened.
+      console.log(error);
     });
   }
 
@@ -81,16 +90,16 @@ class App extends Component {
   }
 
   render() {
-    const { authenticated } = this.state;
+    const { authenticated, uid } = this.state;
     console.log("test", authenticated);
     return (
       <div>
-        {authenticated ? <MyAppBar drawerChange={(bool) => this.drawerChange(bool)} /> : null}
+        {authenticated ? <MyAppBar logout={this.logout} drawerChange={(bool) => this.drawerChange(bool)} /> : null}
         <SideBar drawerOpen={this.state.drawerOpen} onClose={() => this.drawerChange(false)} />
         <Switch>
           <Route exact path="/signup" render={() => !authenticated ? <SignUp createWithEmailAndPassword={this.createWithEmailAndPassword} /> : <Redirect to="/home" />} />
           <Route exact path="/" render={() => !authenticated ? <Login loginWithEmail={this.loginWithEmail} /> : <Redirect to="/home" />} />
-          <Route exact path="/todo" render={() => authenticated ? <Todo /> : <Redirect to="/" />} />
+          <Route exact path="/todo" render={() => authenticated ? <Todo uid={uid} /> : <Redirect to="/" />} />
           <Route exact path="/home" render={() => authenticated ? <Home /> : <Redirect to="/" />} />
         </Switch>
       </div>
